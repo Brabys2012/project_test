@@ -1,0 +1,16 @@
+{
+  "chrome": {
+    "default": "128.0",
+    "versions": {
+      "128.0": {
+        "image": "selenoid/chrome:128.0",
+        "port": "4444",
+        "path": "/",
+        "shmSize": 2147483648,
+        "cpu": "1.0",
+        "mem": "2048m",
+        "extraHosts": ["host.docker.internal:host-gateway"]
+      }
+    }
+  }
+}
