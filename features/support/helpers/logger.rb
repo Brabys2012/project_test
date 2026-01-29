@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 def logger_initialize
-  $logger = Logger.new(STDOUT)
+  $logger = Logger.new($stdout)
   $logger.formatter = proc do |severity, datetime, _progname, msg|
     color = case severity
             when 'UNKNOWN'

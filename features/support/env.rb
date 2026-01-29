@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 require 'rest-client'
+require 'rspec/expectations'
 require 'active_support/all'
 require_relative 'helpers/rest_wrapper'
 require_relative 'helpers/logger'
 require_relative 'helpers/step_helper'
 require 'capybara/cucumber'
 require 'selenium-webdriver'
-require_relative 'helpers/class_extentions'
+require 'site_prism'
+require_relative 'helpers/class_extensions'
 
 def browser_setup(browser = 'firefox', use_selenoid = false, browser_version = nil)
   if use_selenoid
@@ -56,17 +58,20 @@ def browser_setup(browser = 'firefox', use_selenoid = false, browser_version = n
         profile['profile.default_content_settings.popups'] = 0 # custom location
         profile['browser.helperApps.neverAsk.saveToDisk'] = 'application/octet-stream, text/xml'
         profile['pdfjs.disabled'] = true
-        Capybara::Selenium::Driver.new(app, browser: :chrome,
-                                            desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
-                                              'chromeOptions' => {
-                                                'args' => ['--window-size=1920,1080'],
-                                                'prefs' => {
-                                                  'download.default_directory' => Dir.pwd + '/features/tmp/',
-                                                  'download.prompt_for_download' => false,
-                                                  'plugins.plugins_disabled' => ['Chrome PDF Viewer']
-                                                }
-                                              }
-                                            ))
+        Capybara::Selenium::Driver.new(
+          app,
+          browser: :chrome,
+          desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
+            'chromeOptions' => {
+              'args' => ['--window-size=1920,1080'],
+              'prefs' => {
+                'download.default_directory' => File.join(Dir.pwd, 'features', 'tmp'),
+                'download.prompt_for_download' => false,
+                'plugins.plugins_disabled' => %w[Chrome PDF Viewer]
+              }
+            }
+          )
+        )
       end
       Capybara.default_driver = :chrome
       Capybara.page.driver.browser.manage.window.maximize
@@ -77,10 +82,10 @@ def browser_setup(browser = 'firefox', use_selenoid = false, browser_version = n
         profile = Selenium::WebDriver::Firefox::Profile.new
         Selenium::WebDriver::Firefox.driver_path = 'configuration/geckodriver'
         profile['browser.download.folderList'] = 2 # custom location
-        profile['browser.download.dir'] = Dir.pwd + '/features/tmp/'
+        profile['browser.download.dir'] = File.join(Dir.pwd, 'features', 'tmp')
         profile['browser.helperApps.neverAsk.saveToDisk'] = 'application/octet-stream, text/xml'
         profile['pdfjs.disabled'] = true
-        Capybara::Selenium::Driver.new(app, browser: :firefox, profile: profile, port: Random.rand(7000..7999))
+        Capybara::Selenium::Driver.new(app, browser: :firefox, profile: profile, port: rand(7000..7999))
       end
       Capybara.default_driver = :firefox_driver
     end
@@ -92,7 +97,9 @@ $use_selenoid = ENV['USE_SELENOID'] != 'false'
 $selenoid_url = (ENV['SELENOID_URL'] || 'http://localhost:4444').sub(%r{/$}, '') # без завершающего слэша
 browser_setup('chrome', $use_selenoid)
 
-configuration = YAML.load_file 'configuration/default.yml'
-$rest_wrap = RestWrapper.new url: 'https://testing4qa.ediweb.ru/api',
-                             **configuration[:credentials]
+configuration = YAML.safe_load_file('configuration/default.yml', permitted_classes: [Symbol])
+$rest_wrap = RestWrapper.new(
+  url: 'https://testing4qa.ediweb.ru/api',
+  **configuration[:credentials]
+)
 logger_initialize

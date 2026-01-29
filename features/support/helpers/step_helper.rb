@@ -17,21 +17,19 @@ def find_user_id(users_information:, user_login:)
 end
 
 def ensure_user_id_loaded(login)
-  if @scenario_data.users_full_info.nil?
+  @scenario_data.users_full_info = $rest_wrap.get('/users') if @scenario_data.users_full_info.nil?
+  return unless @scenario_data.users_id[login].nil?
+
+  begin
+    @scenario_data.users_id[login] = find_user_id(
+      users_information: @scenario_data.users_full_info,
+      user_login: login
+    )
+  rescue RuntimeError
     @scenario_data.users_full_info = $rest_wrap.get('/users')
-  end
-  if @scenario_data.users_id[login].nil?
-    begin
-      @scenario_data.users_id[login] = find_user_id(
-        users_information: @scenario_data.users_full_info,
-        user_login: login
-      )
-    rescue RuntimeError
-      @scenario_data.users_full_info = $rest_wrap.get('/users')
-      @scenario_data.users_id[login] = find_user_id(
-        users_information: @scenario_data.users_full_info,
-        user_login: login
-      )
-    end
+    @scenario_data.users_id[login] = find_user_id(
+      users_information: @scenario_data.users_full_info,
+      user_login: login
+    )
   end
 end
