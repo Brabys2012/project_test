@@ -31,15 +31,14 @@ When(/^скачиваю последний стабильный релиз Ruby$
 end
 
 Then(/^скачанный файл должен находиться в директории загрузок$/) do
-  path = @page_object.path_for_download(@expected_ruby_filename) # или FilesOperations.path_for_download(...)
+  path = @page_object.path_for_download(@expected_ruby_filename)
   expect(File.exist?(path)).to be true
   expect(File.file?(path)).to be true
   $logger.info("Файл найден в директории загрузок: #{path}")
 end
 
 Then(/^имя скачанного файла совпадает с именем файла на сайте$/) do
-  path = @page_object.path_for_download(@expected_ruby_filename) # или FilesOperations.path_for_download(...)
-  actual_filename = File.basename(path)
+  actual_filename = File.basename(@page_object.path_for_download(@expected_ruby_filename))
   expect(actual_filename).to eq(@expected_ruby_filename)
   $logger.info("Имя скачанного файла совпадает с именем на сайте: #{actual_filename}")
 end

@@ -37,7 +37,7 @@ When(/^снова добавляю пользователя c логином ([\
     $rest_wrap.post('/users', login: login, name: name, surname: surname, password: password, active: 1)
   end.to raise_error(StandardError,
                      /Ошибка \d+|409|422|400|Bad Request|конфликт|duplicate|уже существует|unexpected token/i)
-  $logger.info('Ожидаемая ошибка при дубликате логина получена (тест зелёный)')
+  $logger.info('Ожидаемая ошибка при дубликате логина получена')
 end
 
 When(/^добавляю пользователя с параметрами:$/) do |data_table|
@@ -84,7 +84,7 @@ When(/^пытаюсь удалить пользователя с логином 
     user_id = @scenario_data.users_id[login]
     $rest_wrap.delete("/users/#{user_id}")
   end.to raise_error(StandardError, /Ошибка \d+|404|0|неуникален|не найден|не найден в списке/i)
-  $logger.info('Ожидаемая ошибка при удалении отсутствующего пользователя получена (тест зелёный)')
+  $logger.info('Ожидаемая ошибка при удалении отсутствующего пользователя получена')
 end
 
 When(/^проверяю что пользователь с логином ([\w.]+) в списке имеет имя (\w+) фамилию (\w+)$/) do |login, name, surname|
