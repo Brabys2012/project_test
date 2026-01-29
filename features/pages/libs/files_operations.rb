@@ -11,7 +11,7 @@ module FilesOperations
   end
 
   def path_for_download(filename)
-    File.join(Constants::DOWNLOAD_DIR, filename)
+    File.join(Constants.download_dir, filename)
   end
 
   # Скачивает файл после клика по ссылке: через Selenoid API или ожидание в локальной директории.

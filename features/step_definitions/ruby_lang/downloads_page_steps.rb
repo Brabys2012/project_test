@@ -5,7 +5,7 @@ def downloads_page
 end
 
 When(/^перехожу на страницу загрузок$/) do
-  @page_object.ensure_directory(path: Constants::DOWNLOAD_DIR)
+  @page_object.ensure_directory(path: Constants.download_dir)
   expect(ruby_main_page).to have_installation_link(wait: 2)
   ruby_main_page.installation_link.click
   expect(installation_page).to have_downloads_links(wait: 2)
@@ -25,7 +25,7 @@ When(/^скачиваю последний стабильный релиз Ruby$
   downloads_page.stable_release_links.first.click
 
   @page_object.wait_and_save_download(
-    download_dir: Constants::DOWNLOAD_DIR,
+    download_dir: Constants.download_dir,
     filename: @expected_ruby_filename
   )
 end

@@ -2,9 +2,11 @@
 
 # Главная страница https://www.ruby-lang.org/ru/
 class MainPage < SitePrism::Page
-  BASE_URL = 'https://www.ruby-lang.org/ru/'
+  def self.base_url
+    @base_url ||= 'https://www.ruby-lang.org/ru/'
+  end
 
-  set_url BASE_URL
+  set_url base_url
 
   # Ссылка «Скачать» в навигации (href="/ru/documentation/installation/")
   element :installation_link, :xpath, "//a[contains(@href, '/ru/documentation/installation/')]"

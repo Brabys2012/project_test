@@ -3,7 +3,7 @@
 require_relative 'installation_page'
 
 class DownloadsPage < InstallationPage
-  set_url "#{BASE_URL}downloads/"
+  set_url "#{MainPage.base_url}downloads/"
 
   # Ссылка на страницу загрузок
   elements :downloads_links, :xpath, "//a[contains(@href, '/downloads/')]"
