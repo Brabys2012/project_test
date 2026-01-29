@@ -6,16 +6,6 @@ When(/^захожу на страницу "(.+?)"$/) do |url|
   sleep 2
 end
 
-When(/^перехожу на страницу загрузок$/) do
-  @page_object.ensure_directory(path: Constants::DOWNLOAD_DIR)
-  expect(ruby_main_page).to have_installation_link(wait: 2)
-  ruby_main_page.installation_link.click
-  expect(installation_page).to have_downloads_links(wait: 2)
-  installation_page.downloads_links.first.click
-  expect(downloads_page).to be_displayed
-  $logger.info("Открыта страница загрузок: #{downloads_page.current_url}")
-end
-
 When(/^ввожу в поисковой строке текст "([^"]*)"$/) do |text|
   query = find("//input[@name='q']")
   query.set(text)
